@@ -13,6 +13,11 @@ traducao = {"Close": "Fechamento", "High": "Máxima", "Low": "Mínima", "Open": 
 
 
 class Gerador_de_graficos:
+    """Esta classe foi projetada para realizar a extração, processamento e permitir a visualização de dados financeiros de empresas específicas,
+      utilizando a biblioteca yfinance. Ela permite realizar cálculos como variações percentuais, médias móveis e bandas de Bollinger,
+      além de ajustar os dados com base em intervalos de tempo pre-definidos à medida que o intervalo de tempo escolhido pelo usuário aumenta.
+      Além disso expansões, como novos cálculos e gráficos podem ser facilmente implementados de acordo com a necessidade de negócios, 
+      sem que isso adicione qualquer complexidade adicional à classe ou às funções adicionais. """
     def __init__(self, data_inicio, data_final, empresa_selecionada):           
         empresas = {"Tesla": "TSLA", "General Motors": "GM", "Ford": "F", "Toyota": "TM", 
                         "Volkswagen": "VWAGY", "BYD": "BYDDF"} # Dicionário para mapeamento e filtragem das empresas
@@ -28,11 +33,11 @@ class Gerador_de_graficos:
                         
         #Condição de Atualização dos gráficos de acordo com o intervalo de datas escolhido
         if self.dados.shape[0] >45 and self.dados.shape[0]<180:
-            self.dados = self.dados.resample("W").mean()
+            self.dados = self.dados.resample("W").last()
         elif self.dados.shape[0] >=180 and self.dados.shape[0] <500:
-            self.dados = self.dados.resample("MS").mean()
+            self.dados = self.dados.resample("ME").last()
         elif self.dados.shape[0] >=500:
-            self.dados = self.dados.resample("YE").mean()
+            self.dados = self.dados.resample("YE").last()
 
         self.dados.index.strftime('%d/%m/%y')
 
