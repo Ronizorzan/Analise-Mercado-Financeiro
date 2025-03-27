@@ -18,3 +18,5 @@ demonstram que o modelo mantém uma precisão consistente, mesmo ao extrapolar p
 
 Em resumo, a confiança na previsão obtida se apoia em um processo meticuloso que une aprendizado com dados reais e adaptação progressiva às condições futuras. 
 Essa abordagem integrada torna nossas previsões uma ferramenta sólida e informada para auxiliar na tomada de decisões no mercado financeiro.
+
+A Aplicação está disponível em:  https://mercado-financeiro-roni.streamlit.app/
