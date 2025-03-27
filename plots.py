@@ -1,4 +1,4 @@
-import plotly.express as px
+import plotly.express as px                                   
 import plotly.graph_objects as go
 import yfinance as yf
 import pandas as pd
@@ -120,9 +120,9 @@ def Grafico_velas(dados):
              hoverinfo="text") # Usar o texto personalizado no hover
     
     fig5.update_layout(xaxis_title= f"Dia da Maior Variação Negativa: {variacao_negativa_data}<br>  Maior Variação Negativa: \
-        <span style='color:red'>-${valor_variacao_negativa}({variacao_negativa_porc:.2f}%)</span>", #Formatação e estilização dos textos para variação negativa
+        <span style='color:red'>-${valor_variacao_negativa:,.2f}({variacao_negativa_porc:,.2f}%)</span>", #Formatação e estilização dos textos para variação negativa
                         title=f"Dia da Maior variação Positiva: {variacao_positiva_data}<br>Maior Variação Positiva: \
-        <span style='color:green'>+${valor_variacao_positiva}(+{variacao_positiva_porc:.2f}%)</span>",  #Formatação e estilização dos textos para variação positiva
+        <span style='color:green'>+${valor_variacao_positiva:,.2f}(+{variacao_positiva_porc:,.2f}%)</span>",  #Formatação e estilização dos textos para variação positiva
            yaxis_title="Valor das Ações", hoverlabel=dict(namelength=-1), hovermode="x unified", yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"),
            xaxis_rangeslider_visible=False, xaxis=dict(type="category",tickmode="array", titlefont=dict(size=16))) 
 
