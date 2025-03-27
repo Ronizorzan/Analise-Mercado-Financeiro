@@ -90,3 +90,4 @@ watchdog==4.0.0
 webencodings==0.5.1
 yfinance==0.2.37
 zipp==3.18.0
+tensorflow==2.18.0
