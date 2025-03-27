@@ -3,10 +3,9 @@ import plotly.graph_objects as go
 import yfinance as yf
 import pandas as pd
 import numpy as np
-import locale
+
 
 # Configurar o formato de números no estilo brasileiro (vírgula como separador decimal)
-locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 
 #Dicionário para Tradução das Colunas
@@ -97,16 +96,13 @@ def Grafico_velas(dados):
     variacao_positiva_porc = dados_velas["Porcentagem"].max()
     variacao_negativa_porc = dados_velas["Porcentagem"].min()
 
-    valor_variacao_positiva = locale.format_string("%.2f", valor_variacao_positiva)
-    
+        
     
     # Data e valor da maior variação negativa (quando Fechamento < Abertura)
     variacao_negativa_data = dados_velas.loc[dados_velas["Fechamento"] < dados_velas["Abertura"], "Variacao"].idxmax()     
     valor_variacao_negativa = dados_velas.loc[dados_velas["Fechamento"] < dados_velas["Abertura"], "Variacao"].max()   
     
-    valor_variacao_negativa = locale.format_string("%.2f", valor_variacao_negativa)    
-
-    
+       
                       
     # Gerar texto customizado para hover (Tradução)
     dados_velas.index = pd.to_datetime(dados_velas.index, dayfirst=True)

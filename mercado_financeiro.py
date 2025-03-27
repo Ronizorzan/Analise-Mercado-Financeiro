@@ -20,7 +20,7 @@ with st.sidebar:
     with st.expander("**Clique para expandir**"):
         empresas = ["Tesla", "General Motors", "Ford", "Toyota", "Volkswagen", "BYD"] #Lista de empresas disponibilizadas para análise
         empresa_selecionada = st.selectbox("Selecione a empresa que gostaria de analisar", empresas, index=0)
-        data_inicio = st.date_input("Insira a data Inicial", date(2025, 2,21))        
+        data_inicio = st.date_input("Insira a data Inicial", date(2025, 2,26))        
         data_final = st.date_input("Insira a data Final", date.today())                
     st.markdown(":green[**Gerar previsões**]", help="Selecione quantos dias gostaria de prever")
     with st.expander("Clique para expandir"):
