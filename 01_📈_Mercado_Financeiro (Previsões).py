@@ -29,7 +29,7 @@ with st.sidebar:
         tipo = st.radio("Análise ou previsão de Ações", ["Análise", "Previsão"])
         horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=15, value=6, help="Valor Máximo de 15 dias")
     processar = st.button("Processar")            
-if __name__=="__main__":
+if processar:
     dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)      
     dados, medias_moveis, variacao_perc = dados.Gerador_de_calculos()            
     grafico_velas = Grafico_velas(dados) #Gráfico de Velas já vem com todos os cálculos e customizações efetivados
