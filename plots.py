@@ -281,19 +281,19 @@ def treinamento_iterativo(modelo, X_train, y_train, validation_data,  teacher_fo
 
 
 
-def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência"):    
+def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência", coluna="Fechamento"):    
     # Criação do gráfico original    
     dados = dados.reset_index()  # Reseta o índice para usá-lo como coluna
     dados['Data'] = dados["Date"].dt.strftime("%d/%m/%y")  # Converte o índice para string de data
     fig4 = px.line(
         dados, 
         x=dados["Data"], ## Usa a coluna 'Data' criada
-        y=dados.columns[1]  # Usa a coluna de valores
+        y=dados[coluna]  # Usa a coluna de valores
     )
     
     # Adicionando a linha de tendência
     #x_numerico = np.arange(dados.shape[0])  # Converter o índice para valores numéricos
-    coef = np.polyfit(dados.index[:], dados.iloc[:, 1].values, 1)  # Ajuste linear
+    coef = np.polyfit(dados.index[:], dados[coluna].values, 1)  # Ajuste linear
     tendencia = np.poly1d(coef)  # Criação da equação da linha de tendência
     
     if tendencia:
