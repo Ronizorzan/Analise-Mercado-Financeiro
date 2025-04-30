@@ -56,7 +56,7 @@ class Gerador_de_graficos:
     
 #Função para plotagem do gráfico de barras    
 def Grafico_barras(dados, coluna):                    
-    fig1 = px.bar(dados, x=dados.index.strftime("%d/%m/%y"), y=dados[coluna], color=dados[coluna],
+    fig1 = px.bar(dados, x=dados.index.strftime("%d/%m/%y"), y=coluna, color=coluna,
                    color_continuous_scale=px.colors.sequential.Blues, title="Gráfico de Barras")
     fig1.update_layout(xaxis_title="Data", yaxis_title="Valor")                     
     return fig1
@@ -295,7 +295,7 @@ def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência", colun
         x_numerico = range(0, dados.shape[0])  # Converter o índice para valores numéricos
         coef = np.polyfit(x_numerico, dados[coluna].values, 1)  # Ajuste linear
         tendencia = np.poly1d(coef)  # Criação da equação da linha de tendência
-        
+
         fig4.update_traces(
             text="Data", 
             textposition="top left", 
