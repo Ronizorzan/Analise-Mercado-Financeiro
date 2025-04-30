@@ -280,13 +280,13 @@ def treinamento_iterativo(modelo, X_train, y_train, validation_data,  teacher_fo
 
 
 
-
+'''
 def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência"):    
     # Criação do gráfico original
     fig4 = px.line(
         dados, 
         x=dados.index.strftime("%d/%m/%y"), 
-        y=dados.iloc[:]        
+        y=dados.iloc[:]
     )
     
     # Adicionando a linha de tendência
@@ -319,6 +319,42 @@ def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência"):
         )
     
     
+    return fig4'''
+
+
+
+def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência"):
+    # Certifique-se de que 'dados' seja um DataFrame com colunas nomeadas
+    dados = dados.reset_index()  # Reseta o índice para usá-lo como coluna
+    dados['Data'] = dados['Date'].dt.strftime("%d/%m/%y")  # Converte o índice para string de data
+
+    # Criação do gráfico original
+    fig4 = px.line(
+        dados, 
+        x='Data',  # Use a coluna 'Data' criada
+        y=dados.columns[1]  # Use o nome da coluna de valores
+    )
+    
+    # Adicionando a linha de tendência
+    x_numerico = np.arange(len(dados))  # Converter o índice para valores numéricos
+    coef = np.polyfit(x_numerico, dados.iloc[:, 1].values, 1)  # Ajuste linear
+    linha_tendencia = np.poly1d(coef)  # Criação da equação da linha de tendência
+    
+    if tendencia:
+        fig4.add_scatter(
+            x=dados['Data'], 
+            y=linha_tendencia(x_numerico), 
+            mode='lines', 
+            name=legenda, 
+            line=dict(color='white', dash='dash')
+        )
+        
+        # Ajustando o layout e as propriedades
+        fig4.update_layout(
+            xaxis_title="Data", 
+            yaxis_title="Valor", 
+            yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"),
+            title="Gráfico com Linha de Tendência"
+        )
+    
     return fig4
-
-
