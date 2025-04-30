@@ -35,13 +35,13 @@ if __name__=="__main__":
     grafico_velas = Grafico_velas(dados) #Gráfico de Velas já vem com todos os cálculos e customizações efetivados
 
     #Atualização dos eixos e títulos
-    grafico_medias_moveis = Grafico_linhas_values(medias_moveis ) #Gráfico de Médias Móveis    
+    grafico_medias_moveis = Grafico_linhas_tendencia(medias_moveis, True ) #Gráfico de Médias Móveis    
     grafico_medias_moveis.update_layout(title="Identifique a tendência", xaxis_title="Data", yaxis_title="Valor das Ações", 
                                         yaxis=(dict(titlefont=dict(size=17), tickformat=",.2f")))
     grafico_medias_moveis.update_traces(text="Data", textposition="top right", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")
     
     #Atualização dos Eixos e títulos
-    grafico_variacao = Grafico_linhas_values(variacao_perc)  #Gráfico de Variação Percentual 
+    grafico_variacao = Grafico_linhas_tendencia(variacao_perc, legenda="Sem variação")  #Gráfico de Variação Percentual 
     grafico_variacao.update_layout(title="Descubra a Variação Percentual", 
                                    yaxis_title="Variação Percentual", yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"))
     grafico_variacao.update_traces( hovertemplate="Variação Percentual: %{y}%<br>Data: %{x} ")

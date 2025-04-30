@@ -78,6 +78,7 @@ def Grafico_linhas_previsoes(dados):
     return fig3
 
 #Função para plotagem do gráfico de Linhas
+#Função substituida por Grafico_linhas_tendencia
 def Grafico_linhas_values(dados):    
     fig4 = px.line(dados, x=dados.index.strftime("%d/%m/%y"), y=dados.values)
     fig4.update_layout(xaxis_title="Data", yaxis_title="Valor", yaxis=dict(titlefont=dict(size=16)))
@@ -280,7 +281,7 @@ def treinamento_iterativo(modelo, X_train, y_train, validation_data,  teacher_fo
 
 
 
-def Grafico_linhas_tendencia(dados):    
+def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência"):    
     # Criação do gráfico original
     fig4 = px.line(
         dados, 
@@ -293,28 +294,29 @@ def Grafico_linhas_tendencia(dados):
     coef = np.polyfit(x_numerico, dados.values.flatten(), 1)  # Ajuste linear
     tendencia = np.poly1d(coef)  # Criação da equação da linha de tendência
     
-    fig4.update_traces(
-        text="Data", 
-        textposition="top left", 
-        hovertemplate="valor: %{y}<br>Data: %{x}",
-        line=dict(color="#07B8FB", width=2)        
-    )
-
-    fig4.add_scatter(
-        x=dados.index.strftime("%d/%m/%y"), 
-        y=tendencia(x_numerico), 
-        mode='lines', 
-        name='Tendência', 
-        line=dict(color='white', dash='dash')
-    )
+    if tendencia:
+        fig4.update_traces(
+            text="Data", 
+            textposition="top left", 
+            hovertemplate="valor: %{y}<br>Data: %{x}",
+            line=dict(color="#07B8FB", width=2)        
+        )
     
-    # Ajustando o layout e as propriedades
-    fig4.update_layout(
-        xaxis_title="Data", 
-        yaxis_title="Valor", 
-        yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"),
-        title="Gráfico com Linha de Tendência"
-    )
+        fig4.add_scatter(
+            x=dados.index.strftime("%d/%m/%y"), 
+            y=tendencia(x_numerico), 
+            mode='lines', 
+            name=legenda, 
+            line=dict(color='white', dash='dash')
+        )
+        
+        # Ajustando o layout e as propriedades
+        fig4.update_layout(
+            xaxis_title="Data", 
+            yaxis_title="Valor", 
+            yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"),
+            title="Gráfico com Linha de Tendência"
+        )
     
     
     return fig4

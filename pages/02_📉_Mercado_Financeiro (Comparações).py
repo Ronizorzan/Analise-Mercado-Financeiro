@@ -45,10 +45,10 @@ try:
         col1, col2 = st.columns(2)
         with col1:
             st.markdown(f"<div style='font-size: 22px; font-weight: bold'>Ações da Empresa: {empresa_selecionada}", unsafe_allow_html=True)
-            st.plotly_chart(grafico1, use_container_width=True)
+            st.plotly_chart(grafico1, use_container_width=True, key="grafico1")
         with col2:                    
             st.markdown(f"<div style='font-size: 22px; font-weight: bold'>Ações da Empresa: {empresa_selecionada_2}", unsafe_allow_html=True)
-            st.plotly_chart(grafico2, use_container_width=True)
+            st.plotly_chart(grafico2, use_container_width=True, key="grafico2")
 
         st.markdown("<div style='font-size: 35px; font-weight: bold; color: #026d04'>Identificação de Oportunidades</div>", unsafe_allow_html=True)
         st.markdown("<hr style='border: 1px solid #026d04'>", unsafe_allow_html=True)
@@ -63,22 +63,22 @@ try:
         
         col1, col2 = st.columns(2)
         with col1:            
-            grafico_medias_moveis = Grafico_linhas_tendencia(medias_moveis1) #Gráfico de Médias Móveis (1ª empresa)
+            grafico_medias_moveis = Grafico_linhas_tendencia(medias_moveis1, True) #Gráfico de Médias Móveis (1ª empresa)
             grafico_medias_moveis.update_layout(title=f"Tendência de preço da empresa: {empresa_selecionada} ",
                                                  xaxis_title="Data", yaxis_title="Valor das Ações", 
                                         yaxis=(dict(titlefont=dict(size=17), tickformat=",.2f")))
             grafico_medias_moveis.update_traces(text="Data",  textposition="middle center", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")
             st.markdown("<div style='font-size: 22px; font-weight: bold'>Identifique a tendência", unsafe_allow_html=True)                                
-            st.plotly_chart(grafico_medias_moveis, use_container_width=True, key="grafico1")  
+            st.plotly_chart(grafico_medias_moveis, use_container_width=True, key="grafico3")  
 
         with col2:
-            grafico_medias_moveis2 = Grafico_linhas_tendencia(medias_moveis2 ) #Gráfico de Médias Móveis (2ª empresa)
+            grafico_medias_moveis2 = Grafico_linhas_tendencia(medias_moveis2, True ) #Gráfico de Médias Móveis (2ª empresa)
             grafico_medias_moveis2.update_layout(title=f"Tendência de preço da empresa {empresa_selecionada_2} ",
                                                   xaxis_title="Data", yaxis_title="Valor das Ações", 
                                         yaxis=(dict(titlefont=dict(size=19), tickformat=",.2f")))
             grafico_medias_moveis2.update_traces(text="Data", textposition="middle center", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")
             st.markdown("<div style='font-size: 22px; font-weight: bold'>Identifique a tendência", unsafe_allow_html=True)
-            st.plotly_chart(grafico_medias_moveis2, use_container_width=True, key="grafico2")
+            st.plotly_chart(grafico_medias_moveis2, use_container_width=True, key="grafico4")
         st.markdown("<div style='font-size: 35px; font-weight:bold; color: #07B8FB'>Identificação da Tendência</div>", unsafe_allow_html=True)
         st.markdown("<hr style='border: 1px solid #07B8FB'>", unsafe_allow_html=True)
         st.markdown("<div style='font-size: 25px; font-weight: bold'>Identifique e compare facilmente a tendência de preços.</div>", unsafe_allow_html=True)
@@ -93,23 +93,23 @@ try:
         
         col1, col2 = st.columns(2)
         with col1:
-            grafico_variacao = Grafico_linhas_values(variacao_perc1) #Gráfico de Variação Percentual (1ª empresa)
+            grafico_variacao = Grafico_linhas_tendencia(variacao_perc1, legenda="Sem variação") #Gráfico de Variação Percentual (1ª empresa)
             grafico_variacao.update_layout(title=f"Variação Percentual da empresa {empresa_selecionada} ", 
                                 yaxis_title="Variação Percentual", 
                                 yaxis=dict(titlefont=dict(size=19), tickformat=",.2f"))
             grafico_variacao.update_traces( hovertemplate="Variação Percentual: %{y}%<br>Data: %{x} ")
             grafico_variacao.add_hline(y=0, line_color="white", line_width=1.5, line_dash="dash")
             st.markdown("<div style='font-size: 22px; font-weight: bold'>Identifique a variação percentual", unsafe_allow_html=True)
-            st.plotly_chart(grafico_variacao, use_container_width=True, key="grafico3")
+            st.plotly_chart(grafico_variacao, use_container_width=True, key="grafico5")
 
         with col2:
-            grafico_variacao2 = Grafico_linhas_values(variacao_perc2) #Gráfico de Variação Percentual (2ª empresa)
+            grafico_variacao2 = Grafico_linhas_tendencia(variacao_perc2, legenda="Sem variação") #Gráfico de Variação Percentual (2ª empresa)
             grafico_variacao2.update_layout(title=f"Variação Percentual da empresa {empresa_selecionada_2}",    
                                 yaxis_title="Variação Percentual", yaxis=dict(titlefont=dict(size=17), tickformat=",.2f"))
             grafico_variacao2.update_traces( hovertemplate="Variação Percentual: %{y}%<br>Data: %{x} ")
             grafico_variacao2.add_hline(y=0, line_color="white", line_width=1.5, line_dash="dash")
             st.markdown("<div style='font-size: 22px; font-weight: bold'>Identifique a variação percentual", unsafe_allow_html=True)
-            st.plotly_chart(grafico_variacao2, use_container_width=True, key="grafico4")  
+            st.plotly_chart(grafico_variacao2, use_container_width=True, key="grafico6")  
         st.markdown("<div style='font-size: 35px; font-weight: bold; color: #07B8FB'>Compare facilmente a variação percentual", unsafe_allow_html=True)
         st.markdown("<hr style='border: 1px solid #07B8FB'>", unsafe_allow_html=True)
         st.markdown("<div style='font-size: 25px; font-weight: bold'>Identifique e compare facilmente a variação percentual.</div>", unsafe_allow_html=True)
@@ -129,7 +129,7 @@ try:
                                 xaxis=dict(type="category"), yaxis=dict(titlefont=dict(size=17), tickformat=",.0f"))
             grafico_volume.update_traces(text="Volume de Negociações", textposition="none", hovertemplate="Volume de Negociações: %{y}<br>Data: %{x}")
             st.markdown(f"<div style='font-size: 22px; font-weight: bold'>Volume de Negociações da empresa: {empresa_selecionada}", unsafe_allow_html=True)
-            st.plotly_chart(grafico_volume, use_container_width=True, key="grafico5")
+            st.plotly_chart(grafico_volume, use_container_width=True, key="grafico7")
 
         with col2:
                #Atualização dos Eixos e títulos
@@ -138,7 +138,7 @@ try:
                                         xaxis=dict(type="category"), yaxis=dict(titlefont=dict(size=17), tickformat=",.0f"))
             grafico_volume2.update_traces(text="Volume de Negociações", textposition="none", hovertemplate="Volume de Negociações: %{y}<br>Data: %{x}")
             st.markdown(f"<div style='font-size: 22px; font-weight: bold'>Volume de Negociações da empresa: {empresa_selecionada_2}", unsafe_allow_html=True)
-            st.plotly_chart(grafico_volume2, use_container_width=True, key="grafico6")              
+            st.plotly_chart(grafico_volume2, use_container_width=True, key="grafico8")              
         st.markdown("<div style='font-size: 35px; font-weight: bold; color: #07B8FB'>Identifique o volume de negociações", unsafe_allow_html=True)
         st.markdown("<hr style='border: 1px solid #07B8FB'>", unsafe_allow_html=True)
         st.markdown("<div style='font-size: 25px; font-weight: bold'>Identifique e compare facilmente o volume de negociações.</div>", unsafe_allow_html=True)
@@ -155,14 +155,14 @@ try:
             grafico_bollinger.update_layout(title=f"Identifique períodos de maior atividade na empresa {empresa_selecionada} ", yaxis_title="Valor das Ações",
                                 xaxis=dict(type="category"), yaxis=dict(titlefont=dict(size=17), tickformat=",.2f"))
             grafico_bollinger.update_traces(text="Valor das Ações", textposition="middle center", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")
-            st.plotly_chart(grafico_bollinger, use_container_width=True, key="grafico7")
+            st.plotly_chart(grafico_bollinger, use_container_width=True, key="grafico9")
         with col2:
             bollinger2 = Grafico_bollinger(dados2) #Gráfico de Bandas de Bollinger (2ª empresa)
             st.markdown(f"<div style='font-size: 22px; font-weight: bold'>Bandas de Bollinger da empresa: {empresa_selecionada_2}", unsafe_allow_html=True)
             bollinger2.update_layout(title=f"Identifique períodos de maior atividade na empresa {empresa_selecionada_2} ", yaxis_title="Valor das Ações",
                                 xaxis=dict(type="category"), yaxis=dict(titlefont=dict(size=17), tickformat=",.2f"))
             bollinger2.update_traces(text="Valor das Ações", textposition="middle center", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")
-            st.plotly_chart(bollinger2, use_container_width=True, key="grafico8")
+            st.plotly_chart(bollinger2, use_container_width=True, key="grafico10")
 
         st.markdown("<div style='font-size: 35px; font-weight: bold; color: #07B8FB'>Identifique a volatilidade do mercado", unsafe_allow_html=True)
         st.markdown("<hr style='border: 1px solid #07B8FB'>", unsafe_allow_html=True)
