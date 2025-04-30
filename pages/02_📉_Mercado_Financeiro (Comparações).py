@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import date
 from plots import *
+import time
 
 
 
@@ -29,9 +30,11 @@ with st.sidebar:
 
 try:    
     dados1 = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)
+    time.sleep(0.5) #Aguarda 0.5 segundos para evitar sobrecarga no servidor
     dados2 = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada_2)
-    dados1, medias_moveis1, variacao_perc1 = dados1.Gerador_de_calculos()
-    dados2, medias_moveis2, variacao_perc2 = dados2.Gerador_de_calculos()
+    time.sleep(0.5) #Aguarda 0.5 segundos para evitar sobrecarga no servidor
+    dados1, medias_moveis1, variacao_perc1 = dados1.Gerador_de_calculos()    
+    dados2, medias_moveis2, variacao_perc2 = dados2.Gerador_de_calculos()    
     if empresa_selecionada == empresa_selecionada_2:
             st.error("As empresas selecionadas são iguais, por favor selecione empresas diferentes para comparação", icon="🚨")
     if visualizar and tipo== "Gráficos de Velas":        

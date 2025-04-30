@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import date
+from time import sleep
 from plots import *
 from joblib import load
 from tensorflow.keras.models import load_model
@@ -30,8 +31,9 @@ with st.sidebar:
         horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=15, value=6, help="Valor Máximo de 15 dias")
     processar = st.button("Processar")            
 if __name__=="__main__":
-    dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)    
-    dados, medias_moveis, variacao_perc = dados.Gerador_de_calculos()        
+    dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)  
+    sleep(0.5) #Aguarda 0.5 segundos para garantir que o gráfico seja carregado corretamente
+    dados, medias_moveis, variacao_perc = dados.Gerador_de_calculos()            
     grafico_velas = Grafico_velas(dados) #Gráfico de Velas já vem com todos os cálculos e customizações efetivados
 
     #Atualização dos eixos e títulos
