@@ -286,7 +286,7 @@ def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência"):
     fig4 = px.line(
         dados, 
         x=dados.index.strftime("%d/%m/%y"), 
-        y=dados.values        
+        y=dados.values.flatten()        
     )
     
     # Adicionando a linha de tendência
