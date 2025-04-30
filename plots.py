@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from streamlit import cache_resource
+from streamlit import cache_data
 
 
 # Configurar o formato de números no estilo brasileiro (vírgula como separador decimal)
@@ -12,7 +12,7 @@ from streamlit import cache_resource
 #Dicionário para Tradução das Colunas
 traducao = {"Close": "Fechamento", "High": "Máxima", "Low": "Mínima", "Open": "Abertura", "Volume": "Volume de Negociações"}
 
-@cache_resource
+
 class Gerador_de_graficos:
     """Esta classe foi projetada para realizar a extração, processamento e permitir a visualização de dados financeiros de empresas específicas,
       utilizando a biblioteca yfinance. Ela permite realizar cálculos como variações percentuais, médias móveis e bandas de Bollinger,

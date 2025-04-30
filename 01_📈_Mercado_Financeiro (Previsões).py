@@ -37,8 +37,8 @@ if __name__=="__main__":
     #Atualização dos eixos e títulos
     grafico_medias_moveis = Grafico_linhas_tendencia(medias_moveis, True ) #Gráfico de Médias Móveis    
     grafico_medias_moveis.update_layout(title="Identifique a tendência", xaxis_title="Data", yaxis_title="Valor das Ações", 
-                                        yaxis=(dict(titlefont=dict(size=17), tickformat=",.2f")))
-    grafico_medias_moveis.update_traces(text="Data", textposition="top right", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")
+                                            yaxis=(dict(titlefont=dict(size=17), tickformat=",.2f")))
+    grafico_medias_moveis.update_traces(text="Data", textposition="top right", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")    
     
     #Atualização dos Eixos e títulos
     grafico_variacao = Grafico_linhas_tendencia(variacao_perc, legenda="Sem variação")  #Gráfico de Variação Percentual 
