@@ -286,8 +286,8 @@ def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência", colun
     dados = dados.reset_index()  # Reseta o índice para usá-lo como coluna
     dados['Data'] = dados["Date"].dt.strftime("%d/%m/%y")  # Converte o índice para string de data
     fig4 = px.line(data_frame=dados, 
-        x=dados["Data"], # Usa a coluna 'Data' criada
-        y=dados.loc[:, coluna].values  # Usa a coluna de valores
+        x="Data", # Usa a coluna 'Data' criada
+        y=coluna  # Usa a coluna de valores
     )
     
     # Adicionando a linha de tendência
