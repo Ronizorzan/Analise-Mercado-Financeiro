@@ -79,7 +79,7 @@ def Grafico_linhas_previsoes(dados):
 
 #Função para plotagem do gráfico de Linhas
 def Grafico_linhas_values(dados):    
-    fig4 = px.line(dados, dados.index.strftime("%d/%m/%y"), dados.values)
+    fig4 = px.line(dados, x=dados.index.strftime("%d/%m/%y"), y=dados.values)
     fig4.update_layout(xaxis_title="Data", yaxis_title="Valor", yaxis=dict(titlefont=dict(size=16)))
     fig4.update_traces(text="Data", textposition="top left", hovertemplate="valor: %{y}<br>Data: %{x} ",
                        line=dict(color="#07B8FB", width=2), mode="lines")    
