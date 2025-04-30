@@ -292,8 +292,8 @@ def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência"):
     )
     
     # Adicionando a linha de tendência
-    x_numerico = np.arange(len(dados))  # Converter o índice para valores numéricos
-    coef = np.polyfit(x_numerico, dados.iloc[:,1].values, 1)  # Ajuste linear
+    #x_numerico = np.arange(len(dados))  # Converter o índice para valores numéricos
+    coef = np.polyfit(dados.index, dados.iloc[:, 1].values, 1)  # Ajuste linear
     tendencia = np.poly1d(coef)  # Criação da equação da linha de tendência
     
     if tendencia:
@@ -306,7 +306,7 @@ def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência"):
     
         fig4.add_scatter(
             x=dados["Data"], 
-            y=tendencia(x_numerico), 
+            y=tendencia(dados.index), 
             mode='lines', 
             name=legenda, 
             line=dict(color='white', dash='dash')
