@@ -13,15 +13,13 @@ st.set_page_config(page_title="Comparação de Ações", layout="wide", page_ico
 #Configuração da barra lateral
 with st.sidebar:
     st.subheader("**Comparação de Ações**", help="Página de comparação de ações",anchor="sidebar")
-    #st.markdown(":blue[**Configurações das Visualizações**]", help="Selecione as empresas e o intervalo\
-    #            \n de datas que gostaria de visualizar")
     st.markdown(":blue[**Selecione o tipo de Análise**]", help="Escolha abaixo o tipo de análise")
-    with st.expander("**Seleção da Visualização**"):
+    with st.expander("**Seleção da Visualização**", expanded=True):
         tipo = st.radio(":blue[Selecione o tipo de visualização]", ("Gráficos de Velas", 
                                     "Tendência de Preço", "Variação", "Volume de Negociações", "Bandas de Bollinger"), 
                         index=0, help="Selecione o tipo de gráfico que gostaria de visualizar")
             
-    with st.expander("**Seleção de empresas e datas**", expanded=True):
+    with st.expander("**Seleção de empresas e datas**", expanded=False):
         empresas = ["Tesla", "General Motors", "Ford", "Toyota", "Volkswagen", "BYD"] #Lista de empresas disponibilizadas para análise
         empresa_selecionada = st.selectbox("Selecione a primeira empresa que gostaria de comparar ", empresas, index=0)
         empresa_selecionada_2 = st.selectbox("Selecione a segunda empresa que gostaria de comparar", empresas, index=1)

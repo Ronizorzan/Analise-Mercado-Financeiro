@@ -25,7 +25,7 @@ with st.sidebar:
         data_inicio = st.date_input("Insira a data Inicial", date(2025, 3,26))        
         data_final = st.date_input("Insira a data Final", date.today())                
     st.markdown(":blue[**Selecione o tipo de Análise**]", help="Escolha abaixo entre previsão e análise")
-    with st.expander("Seleção das Visualizações"):
+    with st.expander("Seleção das Visualizações", expanded=True):
         tipo = st.radio("Análise ou previsão de Ações", ["Análise", "Previsão"])
         horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=15, value=6, help="Valor Máximo de 15 dias")
     processar = st.button("Processar")            
