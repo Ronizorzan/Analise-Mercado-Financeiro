@@ -281,7 +281,7 @@ def treinamento_iterativo(modelo, X_train, y_train, validation_data,  teacher_fo
 
 
 
-'''def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência", coluna="Fechamento"):    
+def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência", coluna="Fechamento"):    
     # Criação do gráfico original    
     dados = dados.reset_index()  # Reseta o índice para usá-lo como coluna
     dados['Data'] = dados["Date"].dt.strftime("%d/%m/%y")  # Converte o índice para string de data
@@ -291,8 +291,8 @@ def treinamento_iterativo(modelo, X_train, y_train, validation_data,  teacher_fo
     )
     
     # Adicionando a linha de tendência
-    #x_numerico = np.arange(dados.shape[0])  # Converter o índice para valores numéricos
-    coef = np.polyfit(dados.index[:], dados[coluna].values, 1)  # Ajuste linear
+    x_numerico = np.arange(0, dados.shape[0])  # Converter o índice para valores numéricos
+    coef = np.polyfit(x_numerico, dados[coluna].values, 1)  # Ajuste linear
     tendencia = np.poly1d(coef)  # Criação da equação da linha de tendência
     
     if tendencia:
@@ -305,7 +305,7 @@ def treinamento_iterativo(modelo, X_train, y_train, validation_data,  teacher_fo
     
         fig4.add_scatter(
             x=dados["Data"], 
-            y=tendencia(dados.index[:]), 
+            y=tendencia(x_numerico), 
             mode='lines', 
             name=legenda, 
             line=dict(color='white', dash='dash')
@@ -320,56 +320,6 @@ def treinamento_iterativo(modelo, X_train, y_train, validation_data,  teacher_fo
         )
     
     
-    return fig4'''
-
-
-import numpy as np
-import pandas as pd
-import plotly.express as px
-
-def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência", coluna="Fechamento"):
-    # Certifique-se de que 'dados' seja uma série do pandas
-    if not isinstance(dados, pd.Series):
-        raise ValueError("Os dados devem ser uma série do pandas.")
-
-    # Converter a série em um DataFrame para facilitar o uso
-    dados = dados.to_frame(name=coluna)
-    dados.reset_index(inplace=True)
-    dados.rename(columns={"index": "Date"}, inplace=True)
-
-    # Criar a coluna de datas formatadas
-    if pd.api.types.is_datetime64_any_dtype(dados["Date"]):
-        dados["Data"] = dados["Date"].dt.strftime("%d/%m/%y")
-    else:
-        raise ValueError("A coluna 'Date' não é do tipo datetime.")
-
-    # Criação do gráfico original
-    fig4 = px.line(
-        data_frame=dados,
-        x="Data",  # Usa a coluna 'Data' criada
-        y=coluna   # Usa a coluna de valores
-    )
-
-    # Adicionando a linha de tendência
-    x_numerico = np.arange(len(dados))  # Converter o índice para valores numéricos
-    coef = np.polyfit(x_numerico, dados[coluna].values, 1)  # Ajuste linear
-    linha_tendencia = np.poly1d(coef)  # Criação da equação da linha de tendência
-
-    if tendencia:
-        fig4.add_scatter(
-            x=dados["Data"],
-            y=linha_tendencia(x_numerico),
-            mode="lines",
-            name=legenda,
-            line=dict(color="white", dash="dash")
-        )
-
-    # Ajustando o layout e as propriedades
-    fig4.update_layout(
-        xaxis_title="Data",
-        yaxis_title="Valor",
-        yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"),
-        title="Gráfico com Linha de Tendência"
-    )
-
     return fig4
+
+
