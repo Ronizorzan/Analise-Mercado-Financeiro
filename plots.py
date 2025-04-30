@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 import yfinance as yf
 import pandas as pd
 import numpy as np
+from streamlit import cache_resource
 
 
 # Configurar o formato de números no estilo brasileiro (vírgula como separador decimal)
@@ -11,7 +12,7 @@ import numpy as np
 #Dicionário para Tradução das Colunas
 traducao = {"Close": "Fechamento", "High": "Máxima", "Low": "Mínima", "Open": "Abertura", "Volume": "Volume de Negociações"}
 
-
+@cache_resource
 class Gerador_de_graficos:
     """Esta classe foi projetada para realizar a extração, processamento e permitir a visualização de dados financeiros de empresas específicas,
       utilizando a biblioteca yfinance. Ela permite realizar cálculos como variações percentuais, médias móveis e bandas de Bollinger,
@@ -55,7 +56,8 @@ class Gerador_de_graficos:
     
 #Função para plotagem do gráfico de barras    
 def Grafico_barras(dados, coluna):                    
-    fig1 = px.bar(dados, x=dados.index.strftime("%d/%m/%y"), y=dados[coluna])
+    fig1 = px.bar(dados, x=dados.index.strftime("%d/%m/%y"), y=dados[coluna], color=dados[coluna],
+                   color_continuous_scale=px.colors.sequential.Blues, title="Gráfico de Barras")
     fig1.update_layout(xaxis_title="Data", yaxis_title="Valor")                     
     return fig1
 
@@ -78,8 +80,9 @@ def Grafico_linhas_previsoes(dados):
 #Função para plotagem do gráfico de Linhas
 def Grafico_linhas_values(dados):    
     fig4 = px.line(dados, dados.index.strftime("%d/%m/%y"), dados.values)
-    fig4.update_layout(xaxis_title="Data", yaxis_title="Valor", yaxis=dict(titlefont=dict(size=16 ), tickformat=",.2f"))
-    fig4.update_traces(text="Data", textposition="top left", hovertemplate="valor: %{y}<br>Data: %{x} ")
+    fig4.update_layout(xaxis_title="Data", yaxis_title="Valor", yaxis=dict(titlefont=dict(size=16)))
+    fig4.update_traces(text="Data", textposition="top left", hovertemplate="valor: %{y}<br>Data: %{x} ",
+                       line=dict(color="#07B8FB", width=2), mode="lines")    
     return fig4
 
 
@@ -91,23 +94,37 @@ def Grafico_velas(dados):
 
     # Data e valor da maior variação positiva (quando Fechamento > Abertura)    
     dados_velas = dados.copy()
-        
-    dados_velas.index = dados_velas.index.strftime("%d/%m/%y")          # Formatar a data para o estilo DD/MM/AAAA                                
-    variacao_positiva_data = dados_velas.loc[dados_velas["Fechamento"] > dados_velas["Abertura"], "Variacao"].idxmax()    
-    valor_variacao_positiva = dados_velas.loc[dados_velas["Fechamento"] > dados_velas["Abertura"], "Variacao"].max()
 
-    #Variação Percentual
-    dados_velas["Porcentagem"] = ((dados_velas["Fechamento"] - dados_velas["Abertura"]) / dados_velas["Abertura"]) *100
-    variacao_positiva_porc = dados_velas["Porcentagem"].max()
-    variacao_negativa_porc = dados_velas["Porcentagem"].min()
+    # Formatar o índice para datas no formato "DD/MM/YY"
+    dados_velas.index = dados_velas.index.strftime("%d/%m/%y")
 
+    # Calcular a variação percentual prevenindo divisão por zero
+    dados_velas["Porcentagem"] = dados_velas.apply(
+        lambda row: ((row["Fechamento"] - row["Abertura"]) / row["Abertura"] * 100) if row["Abertura"] != 0 else 0,
+        axis=1
+    )
         
-    
-    # Data e valor da maior variação negativa (quando Fechamento < Abertura)
-    variacao_negativa_data = dados_velas.loc[dados_velas["Fechamento"] < dados_velas["Abertura"], "Variacao"].idxmax()     
-    valor_variacao_negativa = dados_velas.loc[dados_velas["Fechamento"] < dados_velas["Abertura"], "Variacao"].max()   
-    
-       
+    # Processar a variação positiva (apenas onde Fechamento > Abertura)
+    pos = dados_velas[dados_velas["Fechamento"] > dados_velas["Abertura"]]
+    if not pos.empty:
+        variacao_positiva_data = pos["Variacao"].idxmax()
+        valor_variacao_positiva = pos["Variacao"].max()
+        variacao_positiva_porc = pos["Porcentagem"].max()
+    else:
+        variacao_positiva_data = "N/A"
+        valor_variacao_positiva = 0
+        variacao_positiva_porc = 0
+
+    # Processar a variação negativa (apenas onde Fechamento < Abertura)
+    neg = dados_velas[dados_velas["Fechamento"] < dados_velas["Abertura"]]
+    if not neg.empty:
+        variacao_negativa_data = neg["Variacao"].idxmax()
+        valor_variacao_negativa = neg["Variacao"].max()
+        variacao_negativa_porc = neg["Porcentagem"].min()
+    else:
+        variacao_negativa_data = "N/A"
+        valor_variacao_negativa = 0
+        variacao_negativa_porc = 0       
                       
     # Gerar texto customizado para hover (Tradução)
     dados_velas.index = pd.to_datetime(dados_velas.index, dayfirst=True)
@@ -144,6 +161,25 @@ def Grafico_bollinger(dados):
     
     return fig6
 
+# Função para separação dos dados para treino, teste e validação
+def separa_dados(data, X, y):
+    length_treino = int(len(data) * 0.75) # 75% para teste
+    length_val = int(len(data) * 0.85)
+
+    #Separação das variáveis independentes
+    X_train = X[: length_treino] # Variáveis independentes treino
+    X_val = X[length_treino: length_val] # Variáveis independentes validação
+    X_test = X[length_val :]  # Variáveis independentes teste
+
+    #Separação das variáveis dependentes
+    y_train = y[: length_treino] # Variável dependente treino     
+    y_val = y[length_treino: length_val] # Variável dependente validação
+    y_test = y[length_val :]  # Variável dependente teste
+    index_test = data.index[length_val :]
+    
+    return X_train, X_val, X_test, y_train, y_val, y_test, index_test[30:]
+
+    
 
 
 def Gerador_Previsoes_RN(horizonte, X_teste, modelo, scaler, passos=30):
@@ -165,20 +201,122 @@ def Gerador_Previsoes_RN(horizonte, X_teste, modelo, scaler, passos=30):
     return previsoes
 
 
+# Função para gerar previsões para um horizonte definido a partir da última janela do conjunto de teste
+#Função usada no próximo projeto com dados multivariados
+def Gerador_Previsoes(horizonte, X_teste, modelo, scaler, passos=30):
+    """Função adaptada para dados multivariados.
+    Gera previsões para um horizonte definido a partir da última janela do conjunto de teste.
+    Args:
+        horizonte (int): Número de passos à frente para prever.
+        X_teste (numpy.ndarray): Dados de teste com shape (n_samples, timesteps, n_features).
+        modelo (keras.Model): Modelo treinado para fazer previsões.
+        scaler (MinMaxScaler): Scaler usado para normalizar os dados.
+        passos (int): Número de passos no tempo usados na janela deslizante.
+    Returns:previsoes (numpy.ndarray): Previsões para o horizonte definido."""
+
+    ultimo_dado = X_teste[-1, :, :]   # shape (timesteps, n_features)
+    previsoes = []
+    for _ in range(horizonte):
+        janela_dados = ultimo_dado.reshape(1, passos, ultimo_dado.shape[1])
+        previsao = modelo.predict(janela_dados, verbose=0)  # shape (1, 4)
+        previsoes.append(previsao[0])
+        ultimo_dado = np.vstack([ultimo_dado[1:], previsao])
+    previsoes = np.array(previsoes)  # (horizonte, 4)
+    previsoes = scaler.inverse_transform(previsoes)
+    return previsoes
+
+
         
-# Função para preparação dos dados
+# Prepara os dados multivariados, criando janelas temporais
 def prepara_dados(ready_data, timesteps=30):
     length = len(ready_data)
     independ = []
     depend = []
     for i in range(timesteps, length):
-        independ.append(ready_data[i - timesteps: i,0])
+        independ.append(ready_data[i - timesteps: i,:])
         depend.append(ready_data[i,0])
     return np.array(independ), np.array(depend)
 
 
+# Prepara os dados multivariados, criando janelas temporais
+#Função usada no próximo projeto com dados multivariados
+def prepara_dados_multivariada(ready_data, timesteps=30):
+    X, y = [], []
+    for i in range(timesteps, len(ready_data)):
+        X.append(ready_data[i-timesteps:i, :])
+        y.append(ready_data[i, :])
+    return np.array(X), np.array(y)
 
 
 
+# (c) Função de treinamento iterativo com Teacher Forcing + Scheduled Sampling  
+def treinamento_iterativo(modelo, X_train, y_train, validation_data,  teacher_forcing_epochs, iterative_epochs, batch_size, sampling_rate=0.6):
+    """
+    Primeiro, treina com teacher forcing.
+    Depois, na fase iterativa, para cada janela, com probabilidade sampling_rate usa a previsão.
+    """
+    print("Iniciando a fase de Teacher Forcing...")
+    modelo.fit(X_train, y_train, validation_data= tuple(validation_data), epochs=teacher_forcing_epochs, batch_size=batch_size, verbose=1)
+    
+    print("Atualizando as entradas iterativamente com Scheduled Sampling...")
+    X_train_iterativo = np.copy(X_train)
+    timesteps = X_train_iterativo.shape[1]
+    n_features = X_train_iterativo.shape[2]
+    
+    for i in range(X_train_iterativo.shape[0]):
+        # Obtém a janela atual e faz a previsão
+        entrada_atual = X_train_iterativo[i].reshape(1, timesteps, n_features)
+        previsao = modelo.predict(entrada_atual, verbose=0)  # shape (1, n_features)
+        # Scheduled sampling: com probabilidade sampling_rate, substitui a última linha da janela
+        if np.random.rand() < sampling_rate:
+            X_train_iterativo[i, -1, :] = previsao[0]
+        # senão, mantém o valor real (já presente em X_train_iterativo)
+    
+    print("Treinando iterativamente com as janelas atualizadas...")
+    modelo.fit(X_train_iterativo, y_train, validation_data= tuple(validation_data), epochs=iterative_epochs, batch_size=batch_size, verbose=1)
+    
+    return modelo
+
+
+
+
+def Grafico_linhas_tendencia(dados):    
+    # Criação do gráfico original
+    fig4 = px.line(
+        dados, 
+        x=dados.index.strftime("%d/%m/%y"), 
+        y=dados.values        
+    )
+    
+    # Adicionando a linha de tendência
+    x_numerico = np.arange(len(dados))  # Converter o índice para valores numéricos
+    coef = np.polyfit(x_numerico, dados.values.flatten(), 1)  # Ajuste linear
+    tendencia = np.poly1d(coef)  # Criação da equação da linha de tendência
+    
+    fig4.update_traces(
+        text="Data", 
+        textposition="top left", 
+        hovertemplate="valor: %{y}<br>Data: %{x}",
+        line=dict(color="#07B8FB", width=2)        
+    )
+
+    fig4.add_scatter(
+        x=dados.index.strftime("%d/%m/%y"), 
+        y=tendencia(x_numerico), 
+        mode='lines', 
+        name='Tendência', 
+        line=dict(color='white', dash='dash')
+    )
+    
+    # Ajustando o layout e as propriedades
+    fig4.update_layout(
+        xaxis_title="Data", 
+        yaxis_title="Valor", 
+        yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"),
+        title="Gráfico com Linha de Tendência"
+    )
+    
+    
+    return fig4
 
 
