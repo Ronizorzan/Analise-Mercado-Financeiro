@@ -31,12 +31,8 @@ with st.sidebar:
     processar = st.button("Processar")            
 if processar and tipo == "Análise":
     try:
-        dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)          
-    
-    except yf.YFRateLimitError:
-        
-        dados = baixar_dados(data_inicio , data_final)           
-    else:
+        dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)                 
+     
         dados, medias_moveis, variacao_perc = dados.Gerador_de_calculos()            
         grafico_velas = Grafico_velas(dados) #Gráfico de Velas já vem com todos os cálculos e customizações efetivados
 
@@ -61,10 +57,13 @@ if processar and tipo == "Análise":
         grafico_volume.update_traces(text="Volume de Negociações", textposition="none", hovertemplate="Volume de Negociações: %{y}<br>Data: %{x}")
         
         grafico_boolinger = Grafico_bollinger(dados)    
-        
+    
+    except Exception as error:
+        st.error(f"Erro ao processar os dados: {error}")   
+    else:        
         st.title(f"Análise das Ações da {empresa_selecionada} ") 
         tab1, tab2, tab3 = st.tabs(["Gráfico de Velas", "Análise Estatística", "Análise de Compras e Vendas"])     
-    with tab1:              #Exibição do Gráfico de Velas
+        with tab1:              #Exibição do Gráfico de Velas
             st.header("Gráfico de Velas", divider="green")
             st.plotly_chart(grafico_velas, use_container_width=True)  
             st.markdown(":green[***Descrição:***]  *Este painel apresenta uma análise visual detalhada dos valores das ações ao longo do período selecionado, \
@@ -74,51 +73,51 @@ if processar and tipo == "Análise":
                         personalizada e imersiva. Este recurso é ideal para acompanhar tendências, projetar estratégias e tomar decisões informadas no mercado financeiro.*")
                   
             
-    with tab2:   
-            st.subheader("Análises Estatísticas", divider="blue")    
-            col1, col2 = st.columns(2)
-            with col1:                                
-                st.plotly_chart(grafico_medias_moveis, use_container_width=True)
-                st.markdown(":blue[***Propósito:***] *Este gráfico apresenta o valor das ações ao longo do período de tempo selecionado, usando uma média móvel.\
-                    A média móvel suaviza as oscilações diárias nos preços das ações, eliminando 'ruídos' e tornando mais fácil identificar tendências gerais, como aumento, queda ou estabilidade no preço.*")
-                st.markdown(":blue[***O que observar?***]")
-                st.markdown(":green[**Subidas Constantes:**] *Podem indicar valorização contínua das ações*")
-                st.markdown(":orange[**Períodos de Estabilidade:**] *Indicam que o preço não está variando muito, sugerindo equilíbrio*")
-                st.markdown(":red[**Quedas Frequentes:**] *Podem sugerir períodos de desvalorização*" )
-                    
+        with tab2:   
+                st.subheader("Análises Estatísticas", divider="blue")    
+                col1, col2 = st.columns(2)
+                with col1:                                
+                    st.plotly_chart(grafico_medias_moveis, use_container_width=True)
+                    st.markdown(":blue[***Propósito:***] *Este gráfico apresenta o valor das ações ao longo do período de tempo selecionado, usando uma média móvel.\
+                        A média móvel suaviza as oscilações diárias nos preços das ações, eliminando 'ruídos' e tornando mais fácil identificar tendências gerais, como aumento, queda ou estabilidade no preço.*")
+                    st.markdown(":blue[***O que observar?***]")
+                    st.markdown(":green[**Subidas Constantes:**] *Podem indicar valorização contínua das ações*")
+                    st.markdown(":orange[**Períodos de Estabilidade:**] *Indicam que o preço não está variando muito, sugerindo equilíbrio*")
+                    st.markdown(":red[**Quedas Frequentes:**] *Podem sugerir períodos de desvalorização*" )
+                        
+
+                with col2:
+                    st.plotly_chart(grafico_variacao, use_container_width=True)
+                    st.markdown(":blue[***Propósito:***] *Este gráfico calcula o quanto o preço das ações mudou, em termos percentuais, de um dia de fechamento para o outro. \
+                                Diferente das variações calculadas dentro de um único dia, como a do gráifco de Velas (valor de abertura versus fechamento),\
+                                este gráfico destaca a mudança geral entre dias consecutivos.*")
+                    st.markdown(":blue[***O que observar?***]")
+                    st.markdown(":green[***Variações Positivas***] *Indicam aumento nas ações em relação ao dia anterior*")
+                    st.markdown(":orange[***Mudanças Bruscas***] *Apontam possíveis eventos ou notícias que impactaram o mercado*")
+                    st.markdown(":red[***Mudanças Negativas***] *Mostram que o preço das ações caiu em relação ao dia anterior*")
+
+        with tab3:    
+            st.subheader("Análises de Volume e Bollinger", divider="blue")
+            col1, col2 = st.columns(2, gap="medium")
+            with col1:
+                st.plotly_chart(grafico_volume, use_container_width=True) 
+                st.markdown(":green[***Descrição:***] *Este gráfico mostra a quantidade de ações negociadas diariamente dentro do período selecionado. \
+                            Barras mais altas indicam dias em que houve maior movimentação dos investidores, ou seja, quando mais pessoas compraram ou venderam ações. \
+                            Isso ajuda a entender quais dias tiveram maior engajamento e atividade no mercado financeiro, destacando os momentos que podem ter \
+                            sido influenciados por notícias,eventos econômicos ou decisões empresariais importantes.* ")
 
             with col2:
-                 st.plotly_chart(grafico_variacao, use_container_width=True)
-                 st.markdown(":blue[***Propósito:***] *Este gráfico calcula o quanto o preço das ações mudou, em termos percentuais, de um dia de fechamento para o outro. \
-                             Diferente das variações calculadas dentro de um único dia, como a do gráifco de Velas (valor de abertura versus fechamento),\
-                             este gráfico destaca a mudança geral entre dias consecutivos.*")
-                 st.markdown(":blue[***O que observar?***]")
-                 st.markdown(":green[***Variações Positivas***] *Indicam aumento nas ações em relação ao dia anterior*")
-                 st.markdown(":orange[***Mudanças Bruscas***] *Apontam possíveis eventos ou notícias que impactaram o mercado*")
-                 st.markdown(":red[***Mudanças Negativas***] *Mostram que o preço das ações caiu em relação ao dia anterior*")
-
-    with tab3:    
-        st.subheader("Análises de Volume e Bollinger", divider="blue")
-        col1, col2 = st.columns(2, gap="medium")
-        with col1:
-            st.plotly_chart(grafico_volume, use_container_width=True) 
-            st.markdown(":green[***Descrição:***] *Este gráfico mostra a quantidade de ações negociadas diariamente dentro do período selecionado. \
-                        Barras mais altas indicam dias em que houve maior movimentação dos investidores, ou seja, quando mais pessoas compraram ou venderam ações. \
-                        Isso ajuda a entender quais dias tiveram maior engajamento e atividade no mercado financeiro, destacando os momentos que podem ter \
-                        sido influenciados por notícias,eventos econômicos ou decisões empresariais importantes.* ")
-
-        with col2:
-            st.plotly_chart(grafico_boolinger, use_container_width=True)
-            st.markdown(":green[***Descrição:***] *Este gráfico utiliza três linhas para apresentar a evolução do preço das ações ao longo do período: \
-                        o valor de fechamento diário e duas faixas chamadas banda superior e banda inferior. Essas faixas, conhecidas como “Bandas de Bollinger”,\
-                        destacam os momentos de maior instabilidade no mercado, onde o preço das ações varia mais do que o normal.\
-                        Isso é útil para identificar tendências e períodos de risco ou oportunidade, especialmente para investidores que buscam aproveitar essas oscilações.*")
+                st.plotly_chart(grafico_boolinger, use_container_width=True)
+                st.markdown(":green[***Descrição:***] *Este gráfico utiliza três linhas para apresentar a evolução do preço das ações ao longo do período: \
+                            o valor de fechamento diário e duas faixas chamadas banda superior e banda inferior. Essas faixas, conhecidas como “Bandas de Bollinger”,\
+                            destacam os momentos de maior instabilidade no mercado, onde o preço das ações varia mais do que o normal.\
+                            Isso é útil para identificar tendências e períodos de risco ou oportunidade, especialmente para investidores que buscam aproveitar essas oscilações.*")
 
 
-elif processar and "Previsão":
-     st.subheader("Previsão de Ações da Tesla", divider="blue")
-     col1, col2 = st.columns([0.55,0.45], gap="medium")
-     with col1:
+elif processar and tipo== "Previsão":
+    st.subheader("Previsão de Ações da Tesla", divider="blue")
+    col1, col2 = st.columns([0.55,0.45], gap="medium")
+    with col1:
         dados = pd.read_csv("dados_teste.csv")                   
         
         
@@ -133,23 +132,23 @@ elif processar and "Previsão":
                 Com indicadores como RMSE, avalie a acurácia e tenha uma idéia concreta da confiabilidade do modelo.*")
         
 
-     with col2:
-         modelo = load_model("Modelo_treinado_close.keras")
-         scaler = load("scaler_close.joblib")         
-         novas_previsoes = Gerador_Previsoes_RN(horizonte_previsao, dados["Valores Reais"], modelo, scaler, 30)
-         novas_previsoes_df = pd.DataFrame({"Previsões Futuras": novas_previsoes.flatten()}, 
-                                           index=pd.date_range("2025-04-28", periods=len(novas_previsoes), freq="B"))
-         grafico_novas_previsoes = Grafico_linhas(novas_previsoes_df, "Previsões Futuras")
-         grafico_novas_previsoes.update_layout(xaxis_title="Data", yaxis_title="Valor das Ações", 
+    with col2:
+        modelo = load_model("Modelo_treinado_close.keras")
+        scaler = load("scaler_close.joblib")         
+        novas_previsoes = Gerador_Previsoes_RN(horizonte_previsao, dados["Valores Reais"], modelo, scaler, 30)
+        novas_previsoes_df = pd.DataFrame({"Previsões Futuras": novas_previsoes.flatten()}, 
+                                        index=pd.date_range("2025-04-28", periods=len(novas_previsoes), freq="B"))
+        grafico_novas_previsoes = Grafico_linhas(novas_previsoes_df, "Previsões Futuras")
+        grafico_novas_previsoes.update_layout(xaxis_title="Data", yaxis_title="Valor das Ações", 
                                         yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"), title="Previsões Futuras das Ações da Tesla")
-         st.plotly_chart(grafico_novas_previsoes, use_container_width=True)       
-         st.markdown(":blue[***Propósito:***] *Este gráfico oferece a opção de gerar previsões futuras permitindo extrapolar além dos dados históricos disponíveis. \
-                     Mas observe que essas previsões são obtidas através de uma Rede Neural — que integra Redes Neurais Convolucionais para captar padrões e Redes Neurais Recorrentes para modelar dependências temporais.\
-                     É importante ressaltar que, para gerar essas projeções, o modelo utiliza uma estratégia iterativa, ou seja, suas próprias previsões servem de entrada\
-                     para estimar eventos subsequentes. Essa abordagem pode levar ao chamado 'Erro Acumulado', que tende a se intensificar à medida que as previsões se estendem para horizontes mais distantes.\
-                     Portanto, embora essas previsões utilizem técnicas avançadas e ofereçam uma visão poderosa sobre o futuro, é recomendável utilizá-las\
-                     com cautela e sempre considerar análises adicionais para tomar decisões mais embasadas.*")         
-     
+        st.plotly_chart(grafico_novas_previsoes, use_container_width=True)       
+        st.markdown(":blue[***Propósito:***] *Este gráfico oferece a opção de gerar previsões futuras permitindo extrapolar além dos dados históricos disponíveis. \
+                    Mas observe que essas previsões são obtidas através de uma Rede Neural — que integra Redes Neurais Convolucionais para captar padrões e Redes Neurais Recorrentes para modelar dependências temporais.\
+                    É importante ressaltar que, para gerar essas projeções, o modelo utiliza uma estratégia iterativa, ou seja, suas próprias previsões servem de entrada\
+                    para estimar eventos subsequentes. Essa abordagem pode levar ao chamado 'Erro Acumulado', que tende a se intensificar à medida que as previsões se estendem para horizontes mais distantes.\
+                    Portanto, embora essas previsões utilizem técnicas avançadas e ofereçam uma visão poderosa sobre o futuro, é recomendável utilizá-las\
+                    com cautela e sempre considerar análises adicionais para tomar decisões mais embasadas.*")         
+        
      
 
      

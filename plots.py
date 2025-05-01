@@ -3,8 +3,8 @@ import plotly.graph_objects as go
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from streamlit import cache_resource, cache_data
-from streamlit import error
+from streamlit import cache_resource
+
 
 # Configurar o formato de números no estilo brasileiro (vírgula como separador decimal)
 
@@ -325,19 +325,6 @@ def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência", colun
     
     return fig4
 
-import time
-
-@cache_data(show_spinner=False)
-def baixar_dados(data_inicio, data_final, ticker= "TSLA", max_tentativas=5, delay=2):
-    for i in range(max_tentativas):
-        try:
-            return yf.download(ticker, start=data_inicio, end=data_final, progress=False)
-        except yf.YFRateLimitError as e:
-            if i < max_tentativas - 1:
-                time.sleep(delay)
-            else:
-                error("Limite de requisições atingido. Tente novamente mais tarde.")
-                raise e
 
 
 
