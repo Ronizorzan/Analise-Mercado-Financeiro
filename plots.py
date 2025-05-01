@@ -27,7 +27,7 @@ class Gerador_de_graficos:
         self.empresa = empresa_selecionada
         if pd.to_datetime(data_inicio) > pd.to_datetime(data_final):
             raise ValueError("A data Inicial deve ser maior do que a data Final")
-        self.dados = yf.download(empresas[empresa_selecionada], data_inicio, data_final, multi_level_index=False, auto_adjust=True)
+        self.dados = yf.download(empresas[empresa_selecionada], data_inicio, data_final, multi_level_index=False, auto_adjust=True, threads=False)
         self.dados = pd.DataFrame(self.dados)        
         self.dados.rename(columns=traducao, inplace=True)        
         

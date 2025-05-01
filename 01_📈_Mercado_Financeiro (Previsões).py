@@ -27,9 +27,9 @@ with st.sidebar:
     st.markdown(":blue[**Selecione o tipo de Análise**]", help="Escolha abaixo entre previsão e análise")
     with st.expander("Seleção das Visualizações", expanded=True):
         tipo = st.radio("Análise ou previsão de Ações", ["Análise", "Previsão"])
-        horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=30, value=6, help="Valor Máximo de 15 dias")
+        horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=20, value=6, help="Valor Máximo de 20 dias")? 
     processar = st.button("Processar")            
-if processar:
+if processar and tipo == "Análise":
     try:
         dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)          
     
