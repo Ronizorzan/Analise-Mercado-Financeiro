@@ -27,39 +27,44 @@ with st.sidebar:
     st.markdown(":blue[**Selecione o tipo de Análise**]", help="Escolha abaixo entre previsão e análise")
     with st.expander("Seleção das Visualizações", expanded=True):
         tipo = st.radio("Análise ou previsão de Ações", ["Análise", "Previsão"])
-        horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=15, value=6, help="Valor Máximo de 15 dias")
+        horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=30, value=6, help="Valor Máximo de 15 dias")
     processar = st.button("Processar")            
 if processar:
-    dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)      
-    dados, medias_moveis, variacao_perc = dados.Gerador_de_calculos()            
-    grafico_velas = Grafico_velas(dados) #Gráfico de Velas já vem com todos os cálculos e customizações efetivados
+    try:
+        dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)          
+    
+    except yf.YFRateLimitError:
+        from time import sleep
+        sleep(3)
+        dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)           
+    else:
+        dados, medias_moveis, variacao_perc = dados.Gerador_de_calculos()            
+        grafico_velas = Grafico_velas(dados) #Gráfico de Velas já vem com todos os cálculos e customizações efetivados
 
-    #Atualização dos eixos e títulos
-    grafico_medias_moveis = Grafico_linhas_tendencia(medias_moveis, False ) #Gráfico de Médias Móveis    
-    grafico_medias_moveis.update_layout(title="Identifique a tendência", xaxis_title="Data", yaxis_title="Valor das Ações", 
-                                            yaxis=(dict(titlefont=dict(size=17), tickformat=",.2f")))
-    grafico_medias_moveis.update_traces(text="Data", textposition="top right", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")    
-    
-    #Atualização dos Eixos e títulos
-    grafico_variacao = Grafico_linhas_tendencia(variacao_perc, legenda="Sem variação")  #Gráfico de Variação Percentual 
-    grafico_variacao.update_layout(title="Descubra a Variação Percentual", 
-                                   yaxis_title="Variação Percentual", yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"))
-    grafico_variacao.update_traces( hovertemplate="Variação Percentual: %{y}%<br>Data: %{x} ", 
-                                   line=dict(color="#07B8FB", width=2))
-    grafico_variacao.add_hline(y=0, line_color="white", line_width=1.5, line_dash="dash")
-            
-    #Atualização dos Eixos e títulos
-    grafico_volume = Grafico_barras(dados, "Volume de Negociações")  #Gráfico de Volume               
-    grafico_volume.update_layout(title="Identifique períodos de maior atividade no mercado", yaxis_title="Volume de Negociações",
-                                xaxis=dict(type="category"), yaxis=dict(titlefont=dict(size=16), tickformat=",.0f"))
-    grafico_volume.update_traces(text="Volume de Negociações", textposition="none", hovertemplate="Volume de Negociações: %{y}<br>Data: %{x}")
-    
-    grafico_boolinger = Grafico_bollinger(dados)    
-    
-    
-if processar and tipo=="Análise":
-    st.title(f"Análise das Ações da {empresa_selecionada} ") 
-    tab1, tab2, tab3 = st.tabs(["Gráfico de Velas", "Análise Estatística", "Análise de Compras e Vendas"])     
+        #Atualização dos eixos e títulos
+        grafico_medias_moveis = Grafico_linhas_tendencia(medias_moveis, True ) #Gráfico de Médias Móveis    
+        grafico_medias_moveis.update_layout(title="Identifique a tendência", xaxis_title="Data", yaxis_title="Valor das Ações", 
+                                                yaxis=(dict(titlefont=dict(size=17), tickformat=",.2f")))
+        grafico_medias_moveis.update_traces(text="Data", textposition="top right", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")    
+        
+        #Atualização dos Eixos e títulos
+        grafico_variacao = Grafico_linhas_tendencia(variacao_perc, legenda="Sem variação")  #Gráfico de Variação Percentual 
+        grafico_variacao.update_layout(title="Descubra a Variação Percentual", 
+                                    yaxis_title="Variação Percentual", yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"))
+        grafico_variacao.update_traces( hovertemplate="Variação Percentual: %{y}%<br>Data: %{x} ", 
+                                    line=dict(color="#07B8FB", width=2))
+        grafico_variacao.add_hline(y=0, line_color="white", line_width=1.5, line_dash="dash")
+                
+        #Atualização dos Eixos e títulos
+        grafico_volume = Grafico_barras(dados, "Volume de Negociações")  #Gráfico de Volume               
+        grafico_volume.update_layout(title="Identifique períodos de maior atividade no mercado", yaxis_title="Volume de Negociações",
+                                    xaxis=dict(type="category"), yaxis=dict(titlefont=dict(size=16), tickformat=",.0f"))
+        grafico_volume.update_traces(text="Volume de Negociações", textposition="none", hovertemplate="Volume de Negociações: %{y}<br>Data: %{x}")
+        
+        grafico_boolinger = Grafico_bollinger(dados)    
+        
+        st.title(f"Análise das Ações da {empresa_selecionada} ") 
+        tab1, tab2, tab3 = st.tabs(["Gráfico de Velas", "Análise Estatística", "Análise de Compras e Vendas"])     
     with tab1:              #Exibição do Gráfico de Velas
             st.header("Gráfico de Velas", divider="green")
             st.plotly_chart(grafico_velas, use_container_width=True)  

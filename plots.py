@@ -27,7 +27,7 @@ class Gerador_de_graficos:
         self.empresa = empresa_selecionada
         if pd.to_datetime(data_inicio) > pd.to_datetime(data_final):
             raise ValueError("A data Inicial deve ser maior do que a data Final")
-        self.dados = yf.download(empresas[empresa_selecionada], data_inicio, data_final, multi_level_index=False)
+        self.dados = yf.download(empresas[empresa_selecionada], data_inicio, data_final, multi_level_index=False, auto_adjust=True)
         self.dados = pd.DataFrame(self.dados)        
         self.dados.rename(columns=traducao, inplace=True)        
         
@@ -291,19 +291,20 @@ def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência", colun
         x="Data", # Usa a coluna 'Data' criada
         y=coluna   # Usa a coluna de valores
     )
+
+    fig4.update_traces(
+            text="Data", 
+            textposition="top left", 
+            hovertemplate="valor: %{y}<br>Data: %{x}",
+            line=dict(color="#07B8FB", width=2)        
+        )
         
     if tendencia:
         # Adicionando a linha de tendência
         x_numerico = range(0, dados.shape[0])  # Converter o índice para valores numéricos
         coef = np.polyfit(x_numerico, dados[coluna].values, 1)  # Ajuste linear
         tendencia = np.poly1d(coef)  # Criação da equação da linha de tendência
-
-        fig4.update_traces(
-            text="Data", 
-            textposition="top left", 
-            hovertemplate="valor: %{y}<br>Data: %{x}",
-            line=dict(color="#07B8FB", width=2)        
-        )
+        
     
         fig4.add_scatter(
             x=dados["Data"], 
