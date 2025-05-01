@@ -35,7 +35,7 @@ if processar:
     
     except yf.YFRateLimitError:
         
-        dados = baixar_dados(data_inicio, data_final, empresa_selecionada)           
+        dados = baixar_dados(data_inicio , data_final)           
     else:
         dados, medias_moveis, variacao_perc = dados.Gerador_de_calculos()            
         grafico_velas = Grafico_velas(dados) #Gráfico de Velas já vem com todos os cálculos e customizações efetivados
