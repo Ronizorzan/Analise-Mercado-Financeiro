@@ -34,9 +34,8 @@ if processar:
         dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)          
     
     except yf.YFRateLimitError:
-        from time import sleep
-        sleep(3)
-        dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)           
+        
+        dados = baixar_dados(data_inicio, data_final, empresa_selecionada)           
     else:
         dados, medias_moveis, variacao_perc = dados.Gerador_de_calculos()            
         grafico_velas = Grafico_velas(dados) #Gráfico de Velas já vem com todos os cálculos e customizações efetivados
