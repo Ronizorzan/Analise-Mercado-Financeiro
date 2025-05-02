@@ -19,14 +19,14 @@ with st.sidebar:
              \n e Previsão das Ações da Tesla")
     st.markdown(":blue[**Configurações das Visualizações**]", help="Selecione a empresa e o intervalo\
                 \n de datas que gostaria de visualizar")
-    with st.expander("**Seleção de empresas e datas**"):
+    with st.expander("**Seleção de empresas e datas**", expanded=True):
         empresas = ["Tesla", "General Motors", "Ford", "Toyota", "Volkswagen", "BYD"] #Lista de empresas disponibilizadas para análise
         empresa_selecionada = st.selectbox("Selecione a empresa que gostaria de analisar", empresas, index=0)
-        data_inicio = st.date_input("Insira a data Inicial", date(2025, 3,26))        
+        data_inicio = st.date_input("Insira a data Inicial", date(2025, 4,10))        
         data_final = st.date_input("Insira a data Final", date.today())                
     st.markdown(":blue[**Selecione o tipo de Análise**]", help="Escolha abaixo entre previsão e análise")
-    with st.expander("Seleção das Visualizações", expanded=True):
-        tipo = st.radio("Análise ou previsão de Ações", ["Análise", "Previsão"])
+    with st.expander("Seleção das Visualizações", expanded=False):
+        tipo = st.radio("Análise ou previsão de Ações", ["Análise", "Previsão"], index=0)
         horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=20, value=6, help="Valor Máximo de 20 dias")
     processar = st.button("Processar")            
 if processar and tipo == "Análise":
@@ -102,7 +102,7 @@ if processar and tipo == "Análise":
 
         with tab3:    
             st.subheader("Análises de Volume e Bollinger", divider="blue")
-            col1, col2 = st.columns(2, gap="medium")
+            col1, col2 = st.columns(2, gap="small")
             with col1:
                 st.plotly_chart(grafico_volume, use_container_width=True) 
                 st.markdown(":green[***Descrição:***] *Este gráfico mostra a quantidade de ações negociadas diariamente dentro do período selecionado. \

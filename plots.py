@@ -157,7 +157,8 @@ def Grafico_bollinger(dados):
     dados['Data'] = dados["Date"].dt.strftime("%d/%m/%y") 
     fig6 = px.line(dados, x="Data", y=["Fechamento", "Banda Superior", "Banda Inferior"],
                 labels={"value": "Valor", "variable": "Indicador", "x":"Data"},
-                title="Identifique momentos de importantes nas compras e vendas")
+                title="Identifique momentos importantes nas compras e vendas")
+                
     fig6.update_layout(xaxis_title="Data", yaxis_title="Valor das Ações", 
                        yaxis=dict(titlefont=dict(size=17), tickformat=",.2f")
                        )
