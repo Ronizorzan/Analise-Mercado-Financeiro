@@ -311,7 +311,7 @@ def Grafico_linhas_tendencia(dados, tendencia=False, legenda="Tendência", colun
             y=tendencia(x_numerico), 
             mode='lines', 
             name=legenda, 
-            line=dict(color='white', dash='dash')
+            line=dict(color='white', dash='dash', width=2)  # Cor e estilo da linha de tendência           
         )
         
         # Ajustando o layout e as propriedades

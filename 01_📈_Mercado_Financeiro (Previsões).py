@@ -43,12 +43,13 @@ if processar and tipo == "Análise":
         grafico_medias_moveis.update_traces(text="Data", textposition="top right", hovertemplate="Valor das Ações: %{y}<br>Data: %{x}")    
         
         #Atualização dos Eixos e títulos
-        grafico_variacao = Grafico_linhas_tendencia(variacao_perc, legenda="Sem variação")  #Gráfico de Variação Percentual 
+        grafico_variacao = Grafico_linhas_tendencia(variacao_perc)  #Gráfico de Variação Percentual 
         grafico_variacao.update_layout(title="Descubra a Variação Percentual", 
                                     yaxis_title="Variação Percentual", yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"))
         grafico_variacao.update_traces( hovertemplate="Variação Percentual: %{y}%<br>Data: %{x} ", 
                                     line=dict(color="#07B8FB", width=2))
-        grafico_variacao.add_hline(y=0, line_color="white", line_width=1.5, line_dash="dash")
+        grafico_variacao.add_hline(y=0, line_color="white", line_width=1.5, line_dash="dash", annotation_text="Sem Variação",
+                                   annotation_position="top left", annotation_font_color="white", annotation_font_size=13) #Linha de referência para variação 0%
                 
         #Atualização dos Eixos e títulos
         grafico_volume = Grafico_barras(dados, "Volume de Negociações")  #Gráfico de Volume               
@@ -78,8 +79,11 @@ if processar and tipo == "Análise":
                 col1, col2 = st.columns(2)
                 with col1:                                
                     st.plotly_chart(grafico_medias_moveis, use_container_width=True)
-                    st.markdown(":blue[***Propósito:***] *Este gráfico apresenta o valor das ações ao longo do período de tempo selecionado, usando uma média móvel.\
-                        A média móvel suaviza as oscilações diárias nos preços das ações, eliminando 'ruídos' e tornando mais fácil identificar tendências gerais, como aumento, queda ou estabilidade no preço.*")
+                    st.markdown(":blue[***Propósito:***] *Este gráfico apresenta o valor das ações ao longo do período de tempo selecionado,\
+                                 usando uma média móvel. A média móvel suaviza as oscilações diárias nos preços das ações, eliminando 'ruídos' e\
+                                 tornando mais fácil identificar tendências gerais, como aumento, queda ou estabilidade no preço.\
+                                Para elevar ainda mais o valor da análise, uma linha de tendência é traçada, dando uma interpretação \
+                                praticamente instantânea da tendência geral das ações.*")
                     st.markdown(":blue[***O que observar?***]")
                     st.markdown(":green[**Subidas Constantes:**] *Podem indicar valorização contínua das ações*")
                     st.markdown(":orange[**Períodos de Estabilidade:**] *Indicam que o preço não está variando muito, sugerindo equilíbrio*")
@@ -138,10 +142,12 @@ elif processar and tipo== "Previsão":
         novas_previsoes = Gerador_Previsoes_RN(horizonte_previsao, dados["Valores Reais"], modelo, scaler, 30)
         novas_previsoes_df = pd.DataFrame({"Previsões Futuras": novas_previsoes.flatten()}, 
                                         index=pd.date_range("2025-04-28", periods=len(novas_previsoes), freq="B"))
-        grafico_novas_previsoes = Grafico_linhas(novas_previsoes_df, "Previsões Futuras")
+        novas_previsoes_df.reset_index(inplace=True) #Reinicia o índice para que a data fique na primeira coluna
+        novas_previsoes_df.rename(columns={"index": "Date"}, inplace=True) #Renomeia a coluna de data para "Data"
+        grafico_novas_previsoes = Grafico_linhas_tendencia(novas_previsoes_df, True, coluna= "Previsões Futuras")
         grafico_novas_previsoes.update_layout(xaxis_title="Data", yaxis_title="Valor das Ações", 
                                         yaxis=dict(titlefont=dict(size=16), tickformat=",.2f"), title="Previsões Futuras das Ações da Tesla")
-        st.plotly_chart(grafico_novas_previsoes, use_container_width=True)       
+        st.plotly_chart(grafico_novas_previsoes, use_container_width=True)               
         st.markdown(":blue[***Propósito:***] *Este gráfico oferece a opção de gerar previsões futuras permitindo extrapolar além dos dados históricos disponíveis. \
                     Mas observe que essas previsões são obtidas através de uma Rede Neural — que integra Redes Neurais Convolucionais para captar padrões e Redes Neurais Recorrentes para modelar dependências temporais.\
                     É importante ressaltar que, para gerar essas projeções, o modelo utiliza uma estratégia iterativa, ou seja, suas próprias previsões servem de entrada\
