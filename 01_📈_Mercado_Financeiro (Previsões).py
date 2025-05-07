@@ -27,47 +27,48 @@ with st.sidebar:
     st.markdown(":blue[**Selecione o tipo de Análise**]", help="Escolha abaixo entre previsão e análise")
     with st.expander("Seleção das Visualizações", expanded=False):
         tipo = st.radio("Análise ou previsão de Ações", ["Análise", "Previsão"], index=0)
-        horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=20, value=6, help="Valor Máximo de 20 dias")
+        horizonte_previsao = st.number_input("Quantos dias gostaria de Prever?", min_value=1, max_value=20, value=6, help="Valor Máximo de 20 dias")        
     processar = st.button("Processar")
-        st.markdown( # Rodapé na barra lateral com as informações do desenvolvedor
-        """
-        <style>
-        .footer {
-        background-color: #f8f9fa;
-        padding: 15px 20px;
-        border-radius: 8px;
-        text-align: center;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin-top: 40px;
-        color: #343a40;
-        }
-        .footer a {
-        margin: 0 15px;
-        display: inline-block;
-        }
-        .footer img {
-        height: 40px;
-        width: auto;
-        transition: transform 0.3s ease;
-        }
-        .footer img:hover {
-        transform: scale(1.1);
-        }
-        </style>
-        <div class="footer">
-        <p><strong>Desenvolvido por: Ronivan</strong></p>
-        <a href="https://github.com/Ronizorzan" target="_blank">
-            <img src="https://img.icons8.com/ios-filled/50/000000/github.png" alt="GitHub">
-        </a>
-        <a href="https://www.linkedin.com/in/ronivan-zorzan-barbosa" target="_blank">
-            <img src="https://img.icons8.com/color/48/000000/linkedin.png" alt="LinkedIn">
-        </a>
-        <a href="https://share.streamlit.io/user/ronizorzan" target="_blank">
-            <img src="https://images.seeklogo.com/logo-png/44/1/streamlit-logo-png_seeklogo-441815.png" alt="Streamlit Community">
-        </a>
-        </div>
-        """,
-        unsafe_allow_html=True)
+    st.markdown( # Rodapé na barra lateral com as informações do desenvolvedor    
+    
+    """
+    <style>
+    .footer {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 40px;
+    color: #343a40;
+    }
+    .footer a {
+    margin: 0 15px;
+    display: inline-block;
+    }
+    .footer img {
+    height: 40px;
+    width: auto;
+    transition: transform 0.3s ease;
+    }
+    .footer img:hover {
+    transform: scale(1.1);
+    }
+    </style>
+    <div class="footer">
+    <p><strong>Desenvolvido por: Ronivan</strong></p>
+    <a href="https://github.com/Ronizorzan" target="_blank">
+        <img src="https://img.icons8.com/ios-filled/50/000000/github.png" alt="GitHub">
+    </a>
+    <a href="https://www.linkedin.com/in/ronivan-zorzan-barbosa" target="_blank">
+        <img src="https://img.icons8.com/color/48/000000/linkedin.png" alt="LinkedIn">
+    </a>
+    <a href="https://share.streamlit.io/user/ronizorzan" target="_blank">
+        <img src="https://images.seeklogo.com/logo-png/44/1/streamlit-logo-png_seeklogo-441815.png" alt="Streamlit Community">
+    </a>
+    </div>
+    """,
+    unsafe_allow_html=True)
 if processar and tipo == "Análise":
     try:
         dados = Gerador_de_graficos(data_inicio, data_final, empresa_selecionada)                 
